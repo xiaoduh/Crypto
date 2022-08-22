@@ -16,14 +16,11 @@ const PercentChange = ({ percent }) => {
     }
   }, [percent]);
 
-  if (percent)
-    return (
-      <div>
-        <p className="percent-change-container" style={{ color }}>
-          {percent ? percent.toFixed(1) + "%" : "-"}
-        </p>
-      </div>
-    );
+  return (
+    <p className="percent-change-container" style={{ color }}>
+      {percent ? percent.toFixed(1) + "%" : " - "}
+    </p>
+  );
 };
 
 export default PercentChange;
