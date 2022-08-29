@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import TableLine from "./TableLine";
 import ToTop from "./ToTop";
+import { useSelector } from "react-redux/es/exports";
 
 const Table = ({ coinsData }) => {
   const [rangeNumber, setRangeNumber] = useState(100);
   const [orderBy, setOrderBy] = useState("");
+  const showStable = useSelector((state) => state.stableReducer);
+  const showList = useSelector((state) => state.listReducer);
   const tableHeader = [
     "Prix",
     "MarketCap",
@@ -17,6 +20,34 @@ const Table = ({ coinsData }) => {
     "1a",
     "ATH",
   ];
+
+  const excludeCoin = (coin) => {
+    if (
+      coin === "usdt" ||
+      coin === "usdc" ||
+      coin === "busd" ||
+      coin === "dai" ||
+      coin === "ust" ||
+      coin === "mim" ||
+      coin === "tusd" ||
+      coin === "usdp" ||
+      coin === "usdn" ||
+      coin === "fei" ||
+      coin === "tribe" ||
+      coin === "gusd" ||
+      coin === "frax" ||
+      coin === "lusd" ||
+      coin === "husd" ||
+      coin === "ousd" ||
+      coin === "xsgd" ||
+      coin === "usdx" ||
+      coin === "eurs"
+    ) {
+      return false;
+    } else {
+      return true;
+    }
+  };
   return (
     <div className="table-container">
       <ul className="table-header">
@@ -62,6 +93,25 @@ const Table = ({ coinsData }) => {
       {coinsData &&
         coinsData
           .slice(0, rangeNumber)
+          .filter((coin) => {
+            if (showList) {
+              let list = window.localStorage.coinList.split(",");
+              if (list.includes(coin.id)) {
+                return coin;
+              }
+            } else {
+              return coin;
+            }
+          })
+          .filter((coin) => {
+            if (showStable) {
+              return coin;
+            } else {
+              if (excludeCoin(coin.symbol)) {
+                return coin;
+              }
+            }
+          })
           .sort((a, b) => {
             switch (orderBy) {
               case "Prix":
@@ -140,7 +190,9 @@ const Table = ({ coinsData }) => {
                 null;
             }
           })
-          .map((coin, index) => <TableLine coin={coin} index={index} />)}
+          .map((coin, index) => (
+            <TableLine coin={coin} index={index} key={index} />
+          ))}
     </div>
   );
 };

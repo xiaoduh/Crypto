@@ -1,6 +1,17 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { setStableState } from "../actions/stable.action";
+import { useDispatch } from "react-redux";
+import { setListDisplay } from "../actions/list.action";
 
 const TableFilters = () => {
+  const [showStable, setShowStable] = useState(true);
+  const dispatch = useDispatch();
+  const [showFavList, setShowFavList] = useState(false);
+
+  useEffect(() => {
+    dispatch(setStableState(showStable));
+    dispatch(setListDisplay(showFavList));
+  }, [showStable, showFavList]);
   return (
     <div className="table-filters">
       <div className="table-filters-container">
@@ -10,13 +21,22 @@ const TableFilters = () => {
             name=""
             id="stableCoin"
             defaultChecked={true}
+            onChange={() => setShowStable(!showStable)}
           />
-          <label htmlFor="stableCoin">Avec Stable Coin</label>
+          <label htmlFor="stableCoin">
+            {showStable ? "Avec stable coin" : "Sans stable coin"}
+          </label>
         </div>
-        <div className="no-list-btn">
+        <div
+          className={showFavList ? "no-list-btn" : "no-list-btn active"}
+          onClick={() => setShowFavList(false)}
+        >
           <p>Aucune Liste</p>
         </div>
-        <div className="fav-list">
+        <div
+          className={showFavList ? "fav-list active" : "fav-list"}
+          onClick={() => setShowFavList(true)}
+        >
           <p>Liste des favoris</p>
           <img src="./assets/star-full.svg" alt="" />
         </div>
